@@ -11,8 +11,13 @@ export default function* mySaga() {
     actionTypes.REGISTER_LOGIN_SIGNOUT_USER,
     userMiddleware.registerLoginSignOutSagaCall
   )
+  yield takeLatest(actionTypes.BUY_TICKETS, userMiddleware.buyTicketsSagaCall)
   yield takeLatest(
-    actionTypes.BUY_TICKETS,
-    userMiddleware.buyTicketsSagaCall
+    actionTypes.SELECT_SEATS_FOR_PAYMENT,
+    userMiddleware.startSessionForBookingSagaCall
+  )
+  yield takeLatest(
+    actionTypes.CANCEL_SEATS,
+    userMiddleware.cancelBookingSagaCall
   )
 }

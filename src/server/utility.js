@@ -135,7 +135,7 @@ export async function hanldeSignOut(profile) {
 // handle buy tickets
 export async function handleBuyTickets(profile, ticketsData) {
   try {
-    if (profile === null) return toast?.warn("You are already signed out")
+    if (profile === null) return toast?.warn("Please sign in first")
 
     const snap = await getSnapOfDocs(
       "tickets",
@@ -148,14 +148,22 @@ export async function handleBuyTickets(profile, ticketsData) {
       await setDoc(doc(firestore, "tickets", ticketsData?.title), {
         title: ticketsData?.title,
         confirmed: ticketsData?.seats,
-        boughtBy: profile?.email
+        boughtBy: profile?.email,
       })
     } else {
       const docSnap = await getSingleDoc("tickets", ticketsData?.title)
       const snapData = docSnap?.data()
       const docRef = doc(firestore, "tickets", ticketsData?.title)
+
+      const sessionData = snapData?.session
+
+      const updatedSessionData = sessionData?.filter(
+        (obj) => !ticketsData?.seats?.includes(obj?.seat)
+      )
+
       await updateDoc(docRef, {
         confirmed: [...snapData?.confirmed, ...ticketsData?.seats],
+        session: updatedSessionData,
       })
     }
 
@@ -171,6 +179,146 @@ export async function handleBuyTickets(profile, ticketsData) {
     })
 
     return toast?.success("Tickets booked successfully.")
+  } catch (error) {
+    return errorHandler(error)
+  }
+}
+
+// handle starting session
+export async function handleStartBookingSession(
+  profile,
+  movieName,
+  selectedSeats,
+  price
+) {
+  try {
+    if (profile === null) return toast?.warn("Please sign in first")
+
+    let docSnap = await getSingleDoc("tickets", movieName)
+    let snapData = docSnap?.data()
+    const docRef = doc(firestore, "tickets", movieName)
+
+    let inSession = snapData?.session
+    if (inSession && inSession?.length > 0) {
+      const prevSessionSelected = inSession?.filter((sess) =>
+        selectedSeats?.includes(sess?.seat)
+      )
+
+      const untouchedData = inSession?.filter(
+        (sess) => !selectedSeats?.includes(sess?.seat)
+      )
+
+      const unRequiredPreviousSessions = prevSessionSelected?.filter((item) => {
+        return item.session.some(
+          (innterItem) => innterItem.email === profile?.email
+        )
+      })
+
+      const requiredPreviousSessions = prevSessionSelected?.filter((item) => {
+        return !item.session.some(
+          (innterItem) => innterItem.email === profile?.email
+        )
+      })
+
+      const creatingPrevSessionSeatsData = requiredPreviousSessions?.map(
+        (prev) => {
+          return {
+            seat: prev.seat,
+            session: [
+              ...prev.session,
+              { email: profile.email, time: Date.now() },
+            ],
+          }
+        }
+      )
+
+      const newSessions = selectedSeats.filter(
+        (key) => !inSession.some((obj) => obj.seat === key)
+      )
+
+      const newSessionsSeats = newSessions?.map((s) => {
+        return {
+          seat: s,
+          session: [{ email: profile?.email, time: Date.now() }],
+        }
+      })
+
+      await updateDoc(docRef, {
+        session: [
+          ...untouchedData,
+          ...unRequiredPreviousSessions,
+          ...creatingPrevSessionSeatsData,
+          ...newSessionsSeats,
+        ],
+      })
+
+      docSnap = await getSingleDoc("tickets", movieName)
+      snapData = docSnap?.data()
+      inSession = snapData?.session
+
+      const fullQueue = inSession
+        .filter((item) => item?.session?.length === 3)
+        .map((item) => item.seat)
+
+      await updateDoc(docRef, {
+        confirmed: [...snapData?.confirmed, ...fullQueue],
+      })
+    } else {
+      const sessionStarter = selectedSeats?.map((s) => {
+        return {
+          seat: s,
+          session: [{ email: profile?.email, time: Date.now() }],
+        }
+      })
+      await updateDoc(docRef, {
+        session: sessionStarter,
+      })
+    }
+  } catch (error) {
+    return errorHandler(error)
+  }
+}
+
+// handle cancel booking session
+export async function handleCancelTicketsSession(profile, seatData) {
+  try {
+    if (profile === null) return toast?.warn("Please sign in first")
+
+    const { movie, seats, price } = seatData
+
+    let docSnap = await getSingleDoc("tickets", movie)
+    let snapData = docSnap?.data()
+    const docRef = doc(firestore, "tickets", movie)
+
+    let inSession = snapData?.session
+
+    const booked = snapData?.confirmed
+
+    const prevSessionSelected = inSession?.filter((sess) =>
+      seats?.includes(sess?.seat)
+    )
+
+    const updatedBooked = booked?.filter(
+      (seat) => !prevSessionSelected?.some((obj) => obj?.seat === seat)
+    )
+
+    const untouchedData = inSession?.filter(
+      (sess) => !seats?.includes(sess?.seat)
+    )
+
+    const updatedPrevSession = prevSessionSelected?.map((prevSess) => {
+      return {
+        seat: prevSess?.seat,
+        session: prevSess?.session?.filter(
+          (innerObj) => innerObj?.email !== profile?.email
+        ),
+      }
+    })
+
+    await updateDoc(docRef, {
+      session: [...untouchedData, ...updatedPrevSession],
+      confirmed: updatedBooked,
+    })
   } catch (error) {
     return errorHandler(error)
   }

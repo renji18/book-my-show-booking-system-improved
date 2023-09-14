@@ -6,4 +6,5 @@ export {
   selectSeatsForPayment,
   buyTicketsAction,
   getAllTickets,
+  cancelSeatTicket,
 } from "./userActions"

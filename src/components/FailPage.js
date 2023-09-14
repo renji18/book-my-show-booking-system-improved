@@ -5,15 +5,15 @@ export default function FailPage() {
   const navigate = useNavigate()
   const [counter, setCounter] = useState(5)
 
-  useEffect(() => {
-    setInterval(() => {
-      setCounter((prev) => prev - 1)
-    }, 1000)
-  }, [])
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     setCounter((prev) => prev - 1)
+  //   }, 1000)
+  // }, [])
 
-  useEffect(() => {
-    counter === 0 && navigate("/")
-  }, [counter, navigate])
+  // useEffect(() => {
+  //   counter === 0 && navigate("/")
+  // }, [counter, navigate])
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -23,7 +23,7 @@ export default function FailPage() {
           Your payment could not be processed.
         </p>
         <p className="text-white mt-[10px] text-[18px]">
-          Redirecting to home page in {counter}...
+          {/* Redirecting to home page in {counter}... */}
         </p>
       </div>
     </div>

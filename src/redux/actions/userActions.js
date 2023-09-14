@@ -64,3 +64,10 @@ export const getAllTickets = (data) => ({
   type: actionType.GET_ALL_TICKETS,
   data,
 })
+
+// cancel seats
+export const cancelSeatTicket = (profile, seatData) => ({
+  type: actionType.CANCEL_SEATS,
+  profile,
+  seatData,
+})

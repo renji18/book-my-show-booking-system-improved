@@ -5,6 +5,7 @@ import { firebaseAuth, firestore } from "./config"
 import { handleAuthStateChange } from "./utility"
 import {
   buyTicketsAction,
+  cancelSeatTicket,
   getAllTickets,
   registerLoginSignOutUser,
   selectSeatsForPayment,
@@ -81,6 +82,11 @@ export const FirebaseProvider = (props) => {
     dispatch(buyTicketsAction(profile, ticketsData))
   }
 
+  // cancel tickets
+  const cancelTicketBooking = async (ticketsData) => {
+    dispatch(cancelSeatTicket(profile, ticketsData))
+  }
+
   return (
     <FirebaseContext.Provider
       value={{
@@ -89,6 +95,7 @@ export const FirebaseProvider = (props) => {
         signOutUser,
         buyTickets,
         selectSeats,
+        cancelTicketBooking,
       }}
     >
       {props.children}

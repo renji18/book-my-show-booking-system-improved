@@ -3,8 +3,10 @@ import * as actionType from "../actions/actionTypes"
 import * as actionCreators from "../actions"
 import {
   handleBuyTickets,
+  handleCancelTicketsSession,
   handleRegistration,
   handleSignIn,
+  handleStartBookingSession,
   hanldeSignOut,
 } from "../../server/utility"
 
@@ -47,6 +49,36 @@ export function* buyTicketsSagaCall(action) {
   try {
     yield put(actionCreators.toggleFirebaseLoader(true))
     yield handleBuyTickets(action?.profile, action?.ticketsData)
+    yield put(actionCreators.toggleFirebaseLoader(false))
+  } catch (error) {
+    yield put(actionCreators.toggleFirebaseLoader(false))
+  }
+}
+
+// session starting for tickets
+export function* startSessionForBookingSagaCall(action) {
+  try {
+    yield put(actionCreators.toggleFirebaseLoader(true))
+    yield handleStartBookingSession(
+      action?.profile,
+      action?.movieName,
+      action?.selectedSeats,
+      action?.price
+    )
+    yield put(actionCreators.toggleFirebaseLoader(false))
+  } catch (error) {
+    yield put(actionCreators.toggleFirebaseLoader(false))
+  }
+}
+
+// cancel booking session
+export function* cancelBookingSagaCall(action) {
+  try {
+    yield put(actionCreators.toggleFirebaseLoader(true))
+    yield handleCancelTicketsSession(
+      action?.profile,
+      action?.seatData,
+    )
     yield put(actionCreators.toggleFirebaseLoader(false))
   } catch (error) {
     yield put(actionCreators.toggleFirebaseLoader(false))

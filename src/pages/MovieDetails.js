@@ -9,12 +9,12 @@ const MovieDetails = () => {
 
   const { profile, seatData } = useSelector((state) => state?.userData)
 
-  const { image, title, cast } = state
+  // const { image, title, cast } = state
 
   const bookTickets = () => {
     if (!profile) return toast.warn("Sing In before booking the tickets")
 
-    if (seatData && seatData?.movie && title !== seatData?.movie) {
+    if (seatData && seatData?.movie && state?.title !== seatData?.movie) {
       toast.info(
         "Please cancel it, or refresh the page to automatically cancel"
       )
@@ -23,9 +23,9 @@ const MovieDetails = () => {
     }
     navigate("/theatre", {
       state: {
-        title,
-        image,
-        cast,
+        title: state?.title,
+        image: state?.image,
+        cast: state?.cast,
       },
     })
   }
@@ -45,7 +45,7 @@ const MovieDetails = () => {
                   }}
                 >
                   <img
-                    src={image}
+                    src={state?.image}
                     alt="nothing"
                     className="imgclass"
                     width="100%"
@@ -61,7 +61,7 @@ const MovieDetails = () => {
           </div>
 
           <div className="headname">
-            <h1 className="headname2">{title}</h1>
+            <h1 className="headname2">{state?.title}</h1>
             <div className="buttoncontainer">
               <button className="date">Releasing on 7 Sep,2023</button>
               <button onClick={bookTickets} className="clickon">
@@ -73,7 +73,7 @@ const MovieDetails = () => {
       </div>
 
       <div className="cast">
-        <img src={cast} alt="nothing" className="castset" />
+        <img src={state?.cast} alt="nothing" className="castset" />
       </div>
     </div>
   )
