@@ -13,17 +13,6 @@ const Navbar = () => {
     setShowOverlay(!showOverlay)
   }
 
-  const subNavbar = [
-    "Movies",
-    "Events",
-    "Plays",
-    "Sports",
-    "Activities",
-    "Buzz",
-  ]
-
-  const sideItems = ["Corporates", "Offers", "Gift Cards"]
-
   return (
     <>
       <div className="navbar">
@@ -58,23 +47,22 @@ const Navbar = () => {
 
       <div className="subnavbar">
         <ul className="navitem flex text-white gap-3 text-sm">
-          {subNavbar?.map((item) => (
-            <li key={item}>
-              <p onClick={() => navigate("/")} className="cursor-pointer">
-                {item}
-              </p>
-            </li>
-          ))}
+          <li>
+            <p
+              onClick={() => navigate("/problem-statement")}
+              className="cursor-pointer"
+            >
+              {"The Problem Faced"}
+            </p>
+          </li>
         </ul>
 
         <ul className="navitem1 flex text-white gap-3 text-sm">
-          {sideItems?.map((item) => (
-            <li key={item}>
-              <p onClick={() => navigate("/")} className="cursor-pointer">
-                {item}
-              </p>
-            </li>
-          ))}
+          <li>
+            <p onClick={() => navigate("/solution")} className="cursor-pointer">
+              {"The Solution We Prepared"}
+            </p>
+          </li>
         </ul>
       </div>
 

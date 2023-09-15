@@ -20,4 +20,8 @@ export default function* mySaga() {
     actionTypes.CANCEL_SEATS,
     userMiddleware.cancelBookingSagaCall
   )
+  yield takeLatest(
+    actionTypes.UPDATE_SESSION_TURN,
+    userMiddleware.updateSessionTurnSagaCall
+  )
 }

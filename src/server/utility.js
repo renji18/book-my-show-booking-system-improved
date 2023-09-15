@@ -148,7 +148,6 @@ export async function handleBuyTickets(profile, ticketsData) {
       await setDoc(doc(firestore, "tickets", ticketsData?.title), {
         title: ticketsData?.title,
         confirmed: ticketsData?.seats,
-        boughtBy: profile?.email,
       })
     } else {
       const docSnap = await getSingleDoc("tickets", ticketsData?.title)
@@ -156,13 +155,15 @@ export async function handleBuyTickets(profile, ticketsData) {
       const docRef = doc(firestore, "tickets", ticketsData?.title)
 
       const sessionData = snapData?.session
-
       const updatedSessionData = sessionData?.filter(
         (obj) => !ticketsData?.seats?.includes(obj?.seat)
       )
 
       await updateDoc(docRef, {
-        confirmed: [...snapData?.confirmed, ...ticketsData?.seats],
+        confirmed:
+          snapData?.confirmed?.length > 0
+            ? [...snapData?.confirmed, ...ticketsData?.seats]
+            : [...ticketsData?.seats],
         session: updatedSessionData,
       })
     }
@@ -198,81 +199,97 @@ export async function handleStartBookingSession(
     let snapData = docSnap?.data()
     const docRef = doc(firestore, "tickets", movieName)
 
-    let inSession = snapData?.session
-    if (inSession && inSession?.length > 0) {
-      const prevSessionSelected = inSession?.filter((sess) =>
-        selectedSeats?.includes(sess?.seat)
-      )
-
-      const untouchedData = inSession?.filter(
-        (sess) => !selectedSeats?.includes(sess?.seat)
-      )
-
-      const unRequiredPreviousSessions = prevSessionSelected?.filter((item) => {
-        return item.session.some(
-          (innterItem) => innterItem.email === profile?.email
-        )
-      })
-
-      const requiredPreviousSessions = prevSessionSelected?.filter((item) => {
-        return !item.session.some(
-          (innterItem) => innterItem.email === profile?.email
-        )
-      })
-
-      const creatingPrevSessionSeatsData = requiredPreviousSessions?.map(
-        (prev) => {
-          return {
-            seat: prev.seat,
-            session: [
-              ...prev.session,
-              { email: profile.email, time: Date.now() },
-            ],
-          }
-        }
-      )
-
-      const newSessions = selectedSeats.filter(
-        (key) => !inSession.some((obj) => obj.seat === key)
-      )
-
-      const newSessionsSeats = newSessions?.map((s) => {
+    if (snapData === undefined) {
+      const newSessionsSeats = selectedSeats?.map((s) => {
         return {
           seat: s,
           session: [{ email: profile?.email, time: Date.now() }],
         }
       })
-
-      await updateDoc(docRef, {
-        session: [
-          ...untouchedData,
-          ...unRequiredPreviousSessions,
-          ...creatingPrevSessionSeatsData,
-          ...newSessionsSeats,
-        ],
+      await setDoc(doc(firestore, "tickets", movieName), {
+        title: movieName,
+        session: [...newSessionsSeats],
       })
-
-      docSnap = await getSingleDoc("tickets", movieName)
-      snapData = docSnap?.data()
-      inSession = snapData?.session
-
-      const fullQueue = inSession
-        .filter((item) => item?.session?.length === 3)
-        .map((item) => item.seat)
-
-      await updateDoc(docRef, {
-        confirmed: [...snapData?.confirmed, ...fullQueue],
-      })
+      return
     } else {
-      const sessionStarter = selectedSeats?.map((s) => {
-        return {
-          seat: s,
-          session: [{ email: profile?.email, time: Date.now() }],
-        }
-      })
-      await updateDoc(docRef, {
-        session: sessionStarter,
-      })
+      let inSession = snapData?.session
+      if (inSession && inSession?.length > 0) {
+        const prevSessionSelected = inSession?.filter((sess) =>
+          selectedSeats?.includes(sess?.seat)
+        )
+
+        const untouchedData = inSession?.filter(
+          (sess) => !selectedSeats?.includes(sess?.seat)
+        )
+
+        const unRequiredPreviousSessions = prevSessionSelected?.filter(
+          (item) => {
+            return item.session.some(
+              (innterItem) => innterItem.email === profile?.email
+            )
+          }
+        )
+
+        const requiredPreviousSessions = prevSessionSelected?.filter((item) => {
+          return !item.session.some(
+            (innterItem) => innterItem.email === profile?.email
+          )
+        })
+
+        const creatingPrevSessionSeatsData = requiredPreviousSessions?.map(
+          (prev) => {
+            return {
+              seat: prev.seat,
+              session: [
+                ...prev.session,
+                { email: profile.email, time: Date.now() },
+              ],
+            }
+          }
+        )
+
+        const newSessions = selectedSeats.filter(
+          (key) => !inSession.some((obj) => obj.seat === key)
+        )
+
+        const newSessionsSeats = newSessions?.map((s) => {
+          return {
+            seat: s,
+            session: [{ email: profile?.email, time: Date.now() }],
+          }
+        })
+
+        await updateDoc(docRef, {
+          session: [
+            ...untouchedData,
+            ...unRequiredPreviousSessions,
+            ...creatingPrevSessionSeatsData,
+            ...newSessionsSeats,
+          ],
+        })
+
+        docSnap = await getSingleDoc("tickets", movieName)
+        snapData = docSnap?.data()
+        inSession = snapData?.session
+
+        const fullQueue = inSession
+          .filter((item) => item?.session?.length === 3)
+          .map((item) => item.seat)
+
+        await updateDoc(docRef, {
+          confirmed: [...snapData?.confirmed, ...fullQueue],
+        })
+      } else {
+        const sessionStarter = selectedSeats?.map((s) => {
+          return {
+            seat: s,
+            session: [{ email: profile?.email, time: Date.now() }],
+          }
+        })
+        await updateDoc(docRef, {
+          session: sessionStarter,
+        })
+      }
     }
   } catch (error) {
     return errorHandler(error)
@@ -291,21 +308,17 @@ export async function handleCancelTicketsSession(profile, seatData) {
     const docRef = doc(firestore, "tickets", movie)
 
     let inSession = snapData?.session
-
     const booked = snapData?.confirmed
 
     const prevSessionSelected = inSession?.filter((sess) =>
       seats?.includes(sess?.seat)
     )
-
     const updatedBooked = booked?.filter(
       (seat) => !prevSessionSelected?.some((obj) => obj?.seat === seat)
     )
-
     const untouchedData = inSession?.filter(
       (sess) => !seats?.includes(sess?.seat)
     )
-
     const updatedPrevSession = prevSessionSelected?.map((prevSess) => {
       return {
         seat: prevSess?.seat,
@@ -315,9 +328,50 @@ export async function handleCancelTicketsSession(profile, seatData) {
       }
     })
 
+    const finalSession = [...untouchedData, ...updatedPrevSession]
     await updateDoc(docRef, {
-      session: [...untouchedData, ...updatedPrevSession],
-      confirmed: updatedBooked,
+      session: finalSession.filter((obj) => obj?.session?.length > 0),
+      confirmed: updatedBooked?.length > 0 ? updatedBooked : [],
+    })
+  } catch (error) {
+    return errorHandler(error)
+  }
+}
+
+// update session turn
+export async function handleUpdateSessionTurn(tickets) {
+  try {
+    tickets?.forEach(async (t) => {
+      const title = t?.title
+      const session = t?.session
+      const updateSession = []
+      session?.forEach((s) => {
+        const innerSession = s?.session
+        const sessionLengthBeforeFilter = innerSession?.length
+        const newInnerSession = innerSession?.filter((is) => {
+          if (Date.now() - is?.time > 60000) return false
+          else return true
+        })
+        const sessionLengthAfterFilter = newInnerSession?.length
+        let updateTime = newInnerSession
+        if (sessionLengthAfterFilter !== sessionLengthBeforeFilter) {
+          updateTime = newInnerSession.map((nis) => {
+            return {
+              ...nis,
+              time: Date.now(),
+            }
+          })
+        }
+        updateSession.push({ ...s, session: updateTime })
+      })
+      const newSession = updateSession?.filter((s) => s?.session?.length > 0)
+      const docRef = doc(firestore, "tickets", title)
+      if (newSession !== undefined) {
+        await updateDoc(docRef, {
+          ...t,
+          session: newSession,
+        })
+      }
     })
   } catch (error) {
     return errorHandler(error)

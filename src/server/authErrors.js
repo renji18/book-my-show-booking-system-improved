@@ -1,4 +1,4 @@
-import { toast } from "react-toastify";
+import { toast } from "react-toastify"
 
 const authErrors = {
   "admin-restricted-operation":
@@ -164,13 +164,13 @@ const authErrors = {
   "weak-password": "The password must be 6 characters long or more.",
   "web-storage-unsupported":
     "This browser is not supported or 3rd party cookies and data may be disabled.",
-};
+}
 
 export async function errorHandler(error) {
-  const errorArray = String(error).split("Error ");
+  const errorArray = String(error).split("Error ")
   const errorIdentifier = String(errorArray[1])
     .slice(1, String(errorArray[1]).length - 2)
-    .split("/")[1];
-  console.log(errorIdentifier);
-  return toast.error(authErrors[errorIdentifier]);
+    .split("/")[1]
+  console.log(errorIdentifier)
+  return toast.error(authErrors[errorIdentifier])
 }

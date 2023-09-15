@@ -220,14 +220,26 @@ const Theatre = () => {
     updatedSeatingArrangement[midLevel][innerLevel][seat] = !prevValue
     setSeatArrangement(updatedSeatingArrangement)
     if (prevValue) {
-      if (data["session"].length > 0)
-        toast.info("You've been removed from the queue for the seat " + seat)
+      if (data["session"].length > 0) {
+        const user = data["session"][0]
+        if (user?.email !== profile?.email) {
+          toast.info("You've been removed from the queue for the seat " + seat)
+        }
+      }
       const filteredVals = selectedSeats.filter((s) => s !== seat)
       setSelectedSeats(filteredVals)
       setPrice((prev) => prev - price)
     } else {
-      if (data["session"].length > 0)
-        toast.info("You've been added to the queue for the seat " + seat)
+      if (data["session"].length > 0) {
+        const user = data["session"][0]
+        if (user?.email !== profile?.email) {
+          toast.info("You've been added to the queue for the seat " + seat)
+        } else {
+          toast.info(
+            "Looks like you are the first one in the queue for this seat"
+          )
+        }
+      }
       setSelectedSeats((prev) => [...prev, seat])
       setPrice((prev) => prev + price)
     }

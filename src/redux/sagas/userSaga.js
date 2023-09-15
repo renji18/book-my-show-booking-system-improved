@@ -7,6 +7,7 @@ import {
   handleRegistration,
   handleSignIn,
   handleStartBookingSession,
+  handleUpdateSessionTurn,
   hanldeSignOut,
 } from "../../server/utility"
 
@@ -75,10 +76,18 @@ export function* startSessionForBookingSagaCall(action) {
 export function* cancelBookingSagaCall(action) {
   try {
     yield put(actionCreators.toggleFirebaseLoader(true))
-    yield handleCancelTicketsSession(
-      action?.profile,
-      action?.seatData,
-    )
+    yield handleCancelTicketsSession(action?.profile, action?.seatData)
+    yield put(actionCreators.toggleFirebaseLoader(false))
+  } catch (error) {
+    yield put(actionCreators.toggleFirebaseLoader(false))
+  }
+}
+
+// update session turn
+export function* updateSessionTurnSagaCall(action) {
+  try {
+    yield put(actionCreators.toggleFirebaseLoader(true))
+    yield handleUpdateSessionTurn(action?.tickets)
     yield put(actionCreators.toggleFirebaseLoader(false))
   } catch (error) {
     yield put(actionCreators.toggleFirebaseLoader(false))

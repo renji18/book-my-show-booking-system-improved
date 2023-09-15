@@ -1,22 +1,59 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useFirebase } from "../server"
+import { toast } from "react-toastify"
 
 export default function Payment() {
   const navigate = useNavigate()
   const state = useLocation()
   const firebase = useFirebase()
-  const dispatch = useDispatch()
 
-  const { seatData, profile } = useSelector((state) => state?.userData)
-  // const { movie, seats, price } = seatData
+  const [filteredSeats, setFilteredSeats] = useState([])
+
+  const [justBoughtBySomeone, setJustBoughtBySomeone] = useState(false)
+  const [isBuyingSeats, setIsBuyingSeats] = useState(true)
+  const [isSessionSeats, setIsSessionSeats] = useState(true)
+
+  const [moveOnHandler, setMoveOnHandler] = useState(0)
+
+  const [nthInQueue, setNthInQueue] = useState(0)
+
+  const { seatData, profile, tickets } = useSelector((state) => state?.userData)
+
+  setTimeout(() => {
+    setMoveOnHandler(101)
+  }, 5000)
+
+  // useEffect to update cancellation of previous person
+  useEffect(() => {
+    const setFilteredSeatsFunction = () => {
+      if (!tickets) return
+      const movieTicket = tickets?.filter(
+        (t) => t?.title === seatData?.movie
+      )[0]
+      const sessionData = movieTicket?.session
+      const stateSelectedSeats = state?.state?.filteredSeats?.map(
+        (obj) => Object.keys(obj)[0]
+      )
+      const filteredArr = sessionData?.filter((obj) =>
+        stateSelectedSeats?.includes(obj?.seat)
+      )
+      setFilteredSeats(filteredArr)
+    }
+    setFilteredSeatsFunction()
+  }, [tickets, state?.state?.filteredSeats])
 
   const buyingSeats = () => {
     let seatsString = ""
-    state?.state?.filteredSeats?.map((fs) => {
-      if (fs["session"].length === 0) {
-        return (seatsString += `${Object.keys(fs)[0]}, `)
+    filteredSeats?.map((fs) => {
+      if (fs["session"].length > 0) {
+        const sessionData = fs["session"][0]
+        if (sessionData?.email === profile?.email) {
+          seatsString += `${fs?.seat}, `
+        }
+      } else {
+        seatsString += `${fs?.seat}, `
       }
     })
     seatsString = seatsString.slice(0, -2)
@@ -25,14 +62,61 @@ export default function Payment() {
 
   const sessionSeats = () => {
     let seatsString = ""
-    state?.state?.filteredSeats?.map((fs) => {
-      if (fs["session"].length > 0) {
-        return (seatsString += `${Object.keys(fs)[0]}, `)
+    filteredSeats?.map((fs) => {
+      const sessionData = fs["session"][0]
+      if (sessionData?.email !== profile?.email) {
+        seatsString += `${fs?.seat}, `
       }
     })
     seatsString = seatsString.slice(0, -2)
     return seatsString
   }
+
+  // useEffect to check if ticket was purchased before someone or not
+  useEffect(() => {
+    const setThisMovieTicketsFunction = () => {
+      if (!tickets || !seatData) return
+      const thisMovie = tickets?.filter((t) => t?.title === seatData?.movie)[0]
+      const confirmedSeats = thisMovie?.confirmed
+      const sessionSeatsArray = sessionSeats().split(", ")
+      const isBoughtBySomeone = sessionSeatsArray?.every((ele) =>
+        confirmedSeats?.includes(ele)
+      )
+      if (isBoughtBySomeone) {
+        setJustBoughtBySomeone(true)
+        toast.info("Please try another seat, sorry for the inconvenience")
+        toast.info(
+          "Looks like someone ahead of you in the queue has bought the ticket."
+        )
+        // queueBtn()
+      }
+    }
+    setThisMovieTicketsFunction()
+  }, [tickets, seatData])
+
+  // useEffect to cancel the session, as the previous person bought the ticket
+  useEffect(() => {
+    if (filteredSeats?.length === 0 && justBoughtBySomeone) {
+      queueBtn()
+    } else {
+      setJustBoughtBySomeone(false)
+    }
+  }, [filteredSeats, justBoughtBySomeone])
+
+  // useEffect to cancel the session, as the time limit was over
+  useEffect(() => {
+    const exceededTimeLimit = () => {
+      if (moveOnHandler > 100) {
+        const emailExists = filteredSeats?.some((fs) =>
+          fs?.session?.some((fss) => fss?.email === profile?.email)
+        )
+        if (!emailExists) {
+          queueBtn()
+        }
+      }
+    }
+    exceededTimeLimit()
+  }, [filteredSeats, profile?.email, moveOnHandler])
 
   const handleClikBtn = (btn) => {
     if (btn === "success") {
@@ -43,13 +127,23 @@ export default function Payment() {
       })
       navigate("/success")
     } else {
-      firebase.cancelTicketBooking(seatData)
+      const newSeatData = { ...seatData, seats: buyingSeats().split(", ") }
+      firebase.cancelTicketBooking(newSeatData)
       // firebase.selectSeats()
       navigate("/fail")
     }
   }
 
-  const queueBtn = () => {}
+  const queueBtn = () => {
+    const newSeatData = { ...seatData, seats: sessionSeats().split(", ") }
+    firebase.cancelTicketBooking(newSeatData)
+    // firebase.selectSeats()
+    navigate("/fail", {
+      state: {
+        message: "queue failure",
+      },
+    })
+  }
 
   return (
     <div className="w-full h-screen m-0 p-0 bg-[#f2f2f2]">
@@ -58,6 +152,7 @@ export default function Payment() {
           <span className="text-white text-[1.1rem]">{seatData?.movie}</span>
         </div>
       </header>
+      {sessionSeats().length > 0 && <div>People before you: {nthInQueue}</div>}
       {buyingSeats().length > 0 && (
         <div className="relative flex-col flex items-center justify-around top-20 ">
           <div className="box-border relative bg-white float-right h-[414px]  flex flex-col items-start shadow-[0_0_2px_rgb(128,128,128)] px-[25px] py-[30px]">

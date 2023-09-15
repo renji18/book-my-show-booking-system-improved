@@ -71,3 +71,9 @@ export const cancelSeatTicket = (profile, seatData) => ({
   profile,
   seatData,
 })
+
+// update session turn
+export const updateSessionTurnAction = (tickets) => ({
+  type: actionType.UPDATE_SESSION_TURN,
+  tickets
+})
