@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useFirebase } from "../server"
 import { toast } from "react-toastify"
-import Pay from '../assets/payment.jpg'
-import Queue from '../assets/queue.png'
+import Pay from "../assets/payment.jpg"
+import Queue from "../assets/queue.png"
 
 export default function Payment() {
   const navigate = useNavigate()
@@ -154,7 +154,7 @@ export default function Payment() {
           <span className="text-white text-[1.1rem]">{seatData?.movie}</span>
         </div>
       </header>
-      {sessionSeats().length > 0 && <div>People before you: {nthInQueue}</div>}
+      {/* {sessionSeats().length > 0 && <div>People before you: {nthInQueue}</div>} */}
       {buyingSeats().length > 0 && (
         <div className="relative flex-col flex items-center justify-around top-20 ">
           <div className="box-border relative bg-white float-right h-[414px]  flex flex-col items-start shadow-[0_0_2px_rgb(128,128,128)] px-[25px] py-[30px]">
@@ -219,7 +219,7 @@ export default function Payment() {
                   handleClikBtn("fail")
                 }}
               >
-                FAIL
+                Cancel
               </div>
 
               <div
@@ -228,7 +228,7 @@ export default function Payment() {
                   handleClikBtn("success")
                 }}
               >
-                SUCCESS
+                Confirm
               </div>
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function Payment() {
       {sessionSeats().length > 0 && (
         <div className="relative mt-10 flex-col flex items-center justify-around top-20 ">
           <div className="box-border relative bg-white float-right  flex flex-col items-start shadow-[0_0_2px_rgb(128,128,128)] px-[25px] py-[30px]">
-          <div className="queue_mode">YOU ARE IN LINE</div>
+            <div className="queue_mode">YOU ARE IN LINE</div>
             <div className="queue_img">
               <img src={Queue} alt="" srcset="" />
             </div>
