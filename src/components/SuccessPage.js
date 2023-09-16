@@ -29,7 +29,7 @@ export default function SuccessPage() {
 
   const createSeatsData = () => {
     let seatsString = ""
-    seatData?.seats.map((seat) => {
+    seatData?.seats?.map((seat) => {
       return (seatsString += `${seat}, `)
     })
     seatsString = seatsString.slice(0, -2)
@@ -42,7 +42,7 @@ export default function SuccessPage() {
 
   useEffect(() => {
     if (counter == 7) {
-      html2pdf().set(options).from(element).save()
+      // html2pdf().set(options).from(element).save()
     }
     if (counter === 0) {
       navigate("/")

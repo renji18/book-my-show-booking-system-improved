@@ -23,7 +23,7 @@ const Ticket = ({movie_name, movie_seats, movie_price}) => {
     }
 
     return(
-        <div className="ticket">
+        <div className="ticket scale-50 flex flex-col items-center">
             <div className="payment_success">
                 Payment Successfull !!!
             </div>
