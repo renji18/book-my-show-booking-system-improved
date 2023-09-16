@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useFirebase } from "../server"
 import { toast } from "react-toastify"
+import Pay from '../assets/payment.jpg'
+import Queue from '../assets/queue.png'
 
 export default function Payment() {
   const navigate = useNavigate()
@@ -156,6 +158,10 @@ export default function Payment() {
       {buyingSeats().length > 0 && (
         <div className="relative flex-col flex items-center justify-around top-20 ">
           <div className="box-border relative bg-white float-right h-[414px]  flex flex-col items-start shadow-[0_0_2px_rgb(128,128,128)] px-[25px] py-[30px]">
+            <div className="test_mode">PAYMENT - TEST MODE</div>
+            <div className="payment_img">
+              <img src={Pay} alt="" srcset="" />
+            </div>
             <h2 className="w-full text-left font-sans font-light uppercase mb-[20px] text-[0.8rem]">
               Booking summary
             </h2>
@@ -206,23 +212,23 @@ export default function Payment() {
               </span>
             </div>
 
-            <div className="w-full mt-28 gap-5 items-center justify-around flex">
+            <div className="w-full mt-2 gap-5 items-center justify-around flex">
               <div
-                className="h-[50px] w-[150px] rounded-[10px] text-[1rem] text-white flex items-center cursor-pointer justify-center bg-[#d93333] hover:bg-[#f91212]"
+                className="h-[50px] w-[150px] rounded-[10px] text-[1rem] text-white flex items-center cursor-pointer justify-center bg-[#d93333] hover:bg-[#f91212] payment_what"
                 onClick={() => {
                   handleClikBtn("fail")
                 }}
               >
-                Cancel
+                FAIL
               </div>
 
               <div
-                className="h-[50px] w-[150px] rounded-[10px] text-[1rem] text-white flex items-center cursor-pointer justify-center bg-[#33d93e] hover:bg-[#10ff20]"
+                className="h-[50px] w-[150px] rounded-[10px] text-[1rem] text-white flex items-center cursor-pointer justify-center bg-[#33d93e] hover:bg-[#10ff20] payment_what"
                 onClick={() => {
                   handleClikBtn("success")
                 }}
               >
-                Confirm
+                SUCCESS
               </div>
             </div>
           </div>
@@ -232,7 +238,11 @@ export default function Payment() {
       {sessionSeats().length > 0 && (
         <div className="relative mt-10 flex-col flex items-center justify-around top-20 ">
           <div className="box-border relative bg-white float-right  flex flex-col items-start shadow-[0_0_2px_rgb(128,128,128)] px-[25px] py-[30px]">
-            <h2 className="w-full text-left font-sans font-light uppercase mb-[20px] text-[0.8rem]">
+          <div className="queue_mode">YOU ARE IN LINE</div>
+            <div className="queue_img">
+              <img src={Queue} alt="" srcset="" />
+            </div>
+            <h2 className="w-full text-left font-sans font-light uppercase mb-[5px] text-[0.8rem]">
               Queued for
             </h2>
 
@@ -244,10 +254,10 @@ export default function Payment() {
 
             <div className="w-full gap-5 items-center justify-around flex">
               <div
-                className="h-[50px] ml-[170px] mt-5 w-[150px] rounded-[10px] text-[1rem] text-white flex items-center cursor-pointer justify-center bg-[#d93333] hover:bg-[#f91212]"
+                className="h-[50px] ml-[170px] mt-5 w-[150px] rounded-[10px] text-[1rem] text-white flex items-center cursor-pointer justify-center bg-[#d93333] hover:bg-[#f91212] payment_what"
                 onClick={queueBtn}
               >
-                Cancel
+                CANCEL
               </div>
             </div>
           </div>

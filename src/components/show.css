@@ -1,0 +1,92 @@
+.ua{
+    font-size: 11px;
+    border-radius: 50%;
+    padding: 3px;
+    width: fit-content;
+    border: 2px solid;
+}
+
+.action{
+    margin-top: 3px;
+    margin-left: 10px;
+    height: fit-content;
+    font-size: 11px;
+    border: 2px solid;
+    width: fit-content;
+    padding: 0px 8px;
+    border-radius: 18px;
+}
+
+.show_movie_certi{
+    display: flex;
+}
+
+.show_movie{
+    color: whitesmoke;
+    padding: 15px 20px 12px 40px;
+    background-color: #4d4d4d;
+}
+
+.show_movie_name{
+    font-size: 30px;
+}
+
+.show_today_date{
+    border-radius: 10px;
+    color: whitesmoke;
+    font-family: 'Ubuntu';
+    width: fit-content;
+    background-color: #ef4260;
+    padding: 5px 12px;
+    text-align: center;
+    margin-left: 70px;
+}
+
+.show_today_date > div{
+    margin-bottom: -5px;
+}
+
+.show_day, .show_month{
+    font-size: 12px;
+}
+
+.show_number{
+    font-size: 20px;
+}
+
+.show_dates{
+    padding: 10px 0px;
+}
+
+.all_theatres{
+    padding: 20px 25px;
+    background-color: #cacaca;
+    height: max-content;
+}
+
+.show_theatre_info{
+    border-radius: 25px;
+    background-color: white;
+    padding: 20px 30px;
+}
+
+.show_theatre_name{
+    font-weight: 600;
+    margin-bottom: 18px;
+
+}
+
+.show_show{
+    cursor: pointer;
+    margin-bottom: 14px;
+    width: fit-content;
+    border: 2px solid;
+    border-color: navy;
+    padding: 3px 18px;
+    color: navy;
+    margin-right: 20px;
+}
+
+.show_timings{
+    display: flex;
+}

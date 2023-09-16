@@ -70,7 +70,7 @@ const Movies = () => {
     <div>
       <h1 className="title px-10 lg:px-20 text-2xl">Recommended Movies</h1>
 
-      <div className="flex px-10 lg:px-20 pb-20 pt-5 flex-wrap gap-y-10 justify-between">
+      <div className="flex px-10 pb-20 pt-5 flex-wrap gap-y-10 justify-between">
         {movieContent?.map((mc) => (
           <SingleMovieCard key={mc?.title} {...mc} />
         ))}

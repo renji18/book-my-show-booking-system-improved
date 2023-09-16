@@ -523,8 +523,9 @@ div .text {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   color: white;
-  font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 36px;
+  text-transform: uppercase;
+  font-family: 'Ubuntu';
+  font-size: 54px;
   font-weight: bold;
   line-height: 42px;
   -webkit-line-clamp: 3;
@@ -538,8 +539,9 @@ div .text {
 }
 
 .date {
+  font-family: 'Ubuntu';
   margin-right: 10px 0;
-  padding: 20px;
+  padding: 6px;
   background-color: transparent;
   border: 2px solid white;
   border-radius: 8px;
@@ -552,19 +554,22 @@ div .text {
 }
 
 .clickon {
-  font-weight: 500;
-  font-size: 20px;
-  padding: 20px;
-  margin-top: 20px;
-  color: white;
-  background-color: rgb(248, 68, 100);
-  border: 1px solid rgb(248, 68, 100);
-  border-radius: 8px;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 8px;
-  /* width: 40%; */
-  position: relative;
-  cursor: pointer;
-  overflow: hidden;
+  text-transform: uppercase;
+    font-family: 'Ubuntu';
+    font-size: 21px;
+    font-weight: 500;
+    /* font-size: 20px; */
+    padding: 10px;
+    margin-top: 20px;
+    color: white;
+    background-color: rgb(248, 68, 100);
+    border: 1px solid rgb(248, 68, 100);
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 8px;
+    /* width: 40%; */
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
 }
 
 /* THEATRE */

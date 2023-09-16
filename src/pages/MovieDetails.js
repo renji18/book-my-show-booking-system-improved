@@ -12,6 +12,17 @@ const MovieDetails = () => {
   // const { image, title, cast } = state
 
   const bookTickets = () => {
+
+    navigate("/theatre", {
+      state: {
+        title: state?.title,
+        image: state?.image,
+        cast: state?.cast,
+      },
+    })
+  }
+
+  const showTiming = () => {
     if (!profile) return toast.warn("Sing In before booking the tickets")
 
     if (seatData && seatData?.movie && state?.title !== seatData?.movie) {
@@ -21,7 +32,8 @@ const MovieDetails = () => {
       toast.info("You have a previous session pending in a different movie")
       return
     }
-    navigate("/theatre", {
+    
+    navigate('/show', {
       state: {
         title: state?.title,
         image: state?.image,
@@ -63,9 +75,9 @@ const MovieDetails = () => {
           <div className="headname">
             <h1 className="headname2">{state?.title}</h1>
             <div className="buttoncontainer">
-              <button className="date">Releasing on 7 Sep,2023</button>
-              <button onClick={bookTickets} className="clickon">
-                Book Tickets
+              <button className="date">In Cinemas Near You ...</button>
+              <button onClick={showTiming} className="clickon">
+                Book Tickets Now
               </button>
             </div>
           </div>

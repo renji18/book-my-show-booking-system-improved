@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { updateSessionTurnAction } from "./redux/actions"
 import Solution from "./pages/Solution"
 import ProblemStatement from "./pages/ProblemStatement"
+import Ticket from "./components/Ticket"
+import Show from "./components/Show"
 
 const App = () => {
   const dispatch = useDispatch()
@@ -51,6 +53,8 @@ const App = () => {
           <Route path="/fail" element={<FailPage />} />
           <Route path="/solution" element={<Solution />} />
           <Route path="/problem-statement" element={<ProblemStatement />} />
+          <Route path="/ticket" element={<Ticket />} />
+          <Route path="/show" element={<Show />} />
         </Routes>
       </BrowserRouter>
     </>

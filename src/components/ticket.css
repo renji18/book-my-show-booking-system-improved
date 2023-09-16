@@ -1,0 +1,78 @@
+.ticket_div{
+    margin-top: 3%;
+    margin-left: 11%;
+    border-radius: 31px;
+    width: 1142px;
+    background-color: #ff6060;
+}
+
+.payment_success{
+    text-align: center;
+    color: #03870a;
+    font-size: 42px;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.ticket_img_div{
+    font-family: 'Ubuntu', sans-serif;
+    position: relative;
+}
+
+.on_ticket{
+    position: absolute;
+}
+
+.booked_movie_img{
+    right: 65px;
+    top: 75px;
+}
+
+.ticket_img_div > img{
+    height: 360px;
+}
+
+.booked_movie_img > img{
+    height: 150px;
+}
+
+.booked_movie_name{
+    left: 442px;
+    top: 64px;
+    font-size: 30px;
+    text-transform: uppercase;
+}
+
+.booked_theatre{
+    font-size: 18px;
+    top: 106px;
+    left: 443px;
+}
+
+.booked_show_time{
+    top: 152px;
+    left: 445px;
+}
+
+.booked_seats{
+    top: 225px;
+    left: 445px;
+}
+
+.booked_screen{
+    top: 152px;
+    left: 688px;
+}
+
+.booked_amt{
+    top: 225px;
+    left: 688px;
+}
+
+.humpty{
+    color: #5b5b5b;
+}
+
+.dumpty{
+    text-transform: uppercase;
+    font-size: 22px;
+}

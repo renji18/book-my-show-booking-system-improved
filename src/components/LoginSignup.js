@@ -122,7 +122,7 @@ const LoginSignup = ({ toggleOverlay }) => {
                 {signUpOrIn === "UP" && (
                   <div className="flex mb-4 justify-between px-2">
                     <label className="cursor-pointer pt-1" htmlFor="Name">
-                      name
+                      Name
                     </label>
                     <input
                       value={data?.name}
@@ -137,7 +137,7 @@ const LoginSignup = ({ toggleOverlay }) => {
                 )}
                 <div className="flex mb-4 justify-between px-2">
                   <label className="cursor-pointer pt-1" htmlFor="Email">
-                    email
+                    E-Mail
                   </label>
                   <input
                     value={data?.email}
@@ -151,7 +151,7 @@ const LoginSignup = ({ toggleOverlay }) => {
                 </div>
                 <div className="flex mb-4 justify-between px-2">
                   <label className="cursor-pointer pt-1" htmlFor="Password">
-                    password
+                    Password
                   </label>
                   <input
                     value={data?.password}
@@ -169,7 +169,7 @@ const LoginSignup = ({ toggleOverlay }) => {
                       className="cursor-pointer pt-1"
                       htmlFor="ConfirmPassword"
                     >
-                      confirm password
+                      Confirm Password
                     </label>
                     <input
                       value={data?.confirmPassword}
@@ -188,7 +188,7 @@ const LoginSignup = ({ toggleOverlay }) => {
                     signUpOrIn === "UP" && "mt-5"
                   } border rounded-md px-2 py-1 absolute right-6`}
                 >
-                  Show Passwords
+                  <i class="fa-solid fa-eye-slash"></i>
                 </button>
                 <button
                   onClick={proceed}
